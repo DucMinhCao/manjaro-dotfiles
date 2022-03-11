@@ -1,11 +1,9 @@
-local status_ok, _ = pcall(require, "lspconfig")
+local status_ok, lspconfig = pcall(require, "lspconfig")
 if not status_ok then
   return
 end
 
 local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
-
-
 local lsp_installer = require("nvim-lsp-installer")
 
 local on_attach = function(client, bufnr)
@@ -53,6 +51,10 @@ end
 -- Overriding the default LSP server options
 local function on_attach(client, bufnr)
   -- Set up buffer-local keymaps (vim.api.nvim_buf_set_keymap()), etc.
+  if client.name == 'tsserver' then
+    client.resolved_capabilities.document_formatting = false
+    client.resolved_capabilities.document_range_formatting = false
+  end
 end
 
 lsp_installer.on_server_ready(function(server)
